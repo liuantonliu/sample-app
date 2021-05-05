@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Nav from "../src/presentation/components/nav";
-import GetData from "../src/infrastructure/api/getJson";
+import GetData from "../src/infrastructure/api/getData";
 
 export default function Items() {
     const [count, setCount] = useState(1);
