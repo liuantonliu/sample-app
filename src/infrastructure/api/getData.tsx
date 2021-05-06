@@ -1,31 +1,20 @@
-import React, {useState, useEffect} from "react";
 import axios from 'axios';
-import MakeCard from "../../presentation/components/cardFormat";
 
-export default function GetData() { // https://levelup.gitconnected.com/fetch-api-data-with-axios-and-display-it-in-a-react-app-with-hooks-3f9c8fa89e7b
-    const [data, getData] = useState([]);
-    const url = 'https://next.json-generator.com/api/json/get/E1HWKqdd8';
-    
-    useEffect(() => {
-        getAllData();
-    }, []);
+export interface JSONDataInterface {
+    name: string;
+    type: string;
+    image: string;
+    keywords: string[];
+  }
 
-    const getAllData = () => {
-        axios.get(url)
-        .then((response) => {
-            const allData = response.data;
-            getData(allData);
-        })
-        .catch(error => console.error(`Error: $(e)`));
-    }
+const url = 'https://next.json-generator.com/api/json/get/E1HWKqdd8';
 
-    return(
-        <div style={{display: "flex", flexWrap: "wrap"}}>
-            {data.map((data,key) => {
-                return ( // https://www.pluralsight.com/guides/load-and-render-json-data-into-react-components
-                    <MakeCard name={data.name} type={data.type} image={data.image} keywords={data.keywords} />
-                )
-            })}
-        </div>
-    )
-}
+const GetData = async () => // no {} brackets needed here
+    axios.get(url)
+    .then((response) => {
+        const arrayData: JSONDataInterface[] = response.data;
+        return arrayData;
+    })
+    .catch((e) => []);
+
+export default GetData;

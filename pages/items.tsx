@@ -1,14 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Nav from "../src/presentation/components/nav";
 import GetData from "../src/infrastructure/api/getData";
+import { JSONDataContext } from '../src/application/contexts/data';
+import MakeCard from "../src/presentation/components/cardFormat";
 
 export default function Items() {
-    const [count, setCount] = useState(1);
+    const dataContext = useContext(JSONDataContext);
+    const [hasErrored, setHasErrored] = useState(false);
 
-    // load the Json array "count" number of times
-    const loadMore = () => {
-        setCount((prev) => prev + 1);
+    const loadMore  = async () => {
+        const data = await GetData();
+        if (data.length === 0) {
+            setHasErrored(true);
+        } else {
+            setHasErrored(false);
+            dataContext.dispatch({ type: 'add', payload: data });
+        }
     }
+
+    useEffect(() => {
+        loadMore ();
+    }, []);
 
     //? idk how efficient this is? people say adding a key get react to think that no need to load it again
     return ( 
@@ -17,9 +29,9 @@ export default function Items() {
         <h1>
           Items
         </h1>
-        <div>
-            {[...Array(count)].map((x,i) =>
-                <GetData key={i}/>
+        <div style={{display: "flex", flexWrap: "wrap"}}>
+            {dataContext.state.map((x,i) =>
+                <MakeCard key={i} index={i}/>
             )} 
         </div>
         <button onClick={loadMore}>
